@@ -59,7 +59,7 @@ namespace TCPEchoServer
             if (parts.Length > 2)
                 int.TryParse(parts[2], out tal2); // Parse andet tal i input (Tal2)
             if (parts.Length > 3)
-                return new Request { Method = "too_many_args" }; // Hvis der er flere end 3 argumenter, returneres en fejl
+                return new Request { Method = "too_many_args" }; // Hvis der er flere end 3 argumenter, returneres en fejl via switch case
             return new Request
             {
                 Method = method,
