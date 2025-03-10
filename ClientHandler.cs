@@ -25,45 +25,58 @@ namespace TCPEchoServer
                 Console.WriteLine(msg);
                 switch (msg)
                 {
-                    case "time":
-                        writer.WriteLine(DateTime.Now.ToString(format: "dd/MM/yyyy HH:mm"));
+                    case "Random":
+                        writer.WriteLine("Input two numbers seperated by a space, to generate a random number from the chosen interval");
                         writer.Flush();
-                        break;
-                    case "wee":
-                        writer.WriteLine("WEE");
-                        writer.Flush();
-                        break;
-
-                    case "ToUpper":
-                        writer.WriteLine("Write to convert to uppercase");
-                        writer.Flush();
-                        string? answer = reader.ReadLine();
-                        writer.WriteLine(answer?.ToUpper());
-                        writer.Flush();
-                        break;
-
-                    case "ToLower":
-                        writer.WriteLine("Write to convert to lowercase");
-                        writer.Flush();
-                        answer = reader.ReadLine();
-                        writer.WriteLine(answer?.ToLower());
-                        writer.Flush();
-                        break;
-
-                    case "RollDice":
-                        writer.WriteLine("Choose a die to roll ( 4 / 6 / 8 / 10 / 12 / 20 )");
-                        writer.Flush();
-                        answer = reader.ReadLine();
-                        if (answer == "4" ||answer == "6" || answer == "8" || answer == "10" || answer == "12" || answer == "20")
+                        msg = reader.ReadLine();
+                        string[] numbers = msg?.Split(' ');
+                        if (numbers != null && numbers.Length == 2 && int.TryParse(numbers[0], out int min) && int.TryParse(numbers[1], out int max))
                         {
-                            int maxInt = Int32.Parse(answer);
-                            Random rnd = new Random();
-                            int rand1 = rnd.Next(maxInt) + 1;
-                            writer.WriteLine(rand1);
+                            if (min > max)
+                            {
+                                writer.WriteLine("Invalid range: first number must be smaller than second number.");
+                            }
+                            else
+                            {
+                                Random rnd = new Random();
+                                writer.WriteLine(rnd.Next(min, max + 1));
+                            }
                         }
                         else
                         {
-                            writer.WriteLine("Die value not listed");
+                            writer.WriteLine("Invalid input. Please provide two numbers separated by space.");
+                        }
+                        writer.Flush();
+                        break;
+
+                    case "Add":
+                        writer.WriteLine("Input numbers to add them together");
+                        writer.Flush();
+                        msg = reader.ReadLine();
+                        numbers = msg?.Split(' ');
+                        if (numbers != null && numbers.Length == 2 && int.TryParse(numbers[0], out int num1) && int.TryParse(numbers[1], out int num2))
+                        {
+                            writer.WriteLine(num1 + num2);
+                        }
+                        else
+                        {
+                            writer.WriteLine("Invalid input. Please provide two numbers separated by space.");
+                        }
+                        writer.Flush();
+                        break;
+
+                    case "Subtract":
+                        writer.WriteLine("Input numbers");
+                        writer.Flush();
+                        msg = reader.ReadLine();
+                        numbers = msg?.Split(' ');
+                        if (numbers != null && numbers.Length == 2 && int.TryParse(numbers[0], out num1) && int.TryParse(numbers[1], out num2))
+                        {
+                            writer.WriteLine(num1 - num2);
+                        }
+                        else
+                        {
+                            writer.WriteLine("Invalid input. Please provide two numbers separated by space.");
                         }
                         writer.Flush();
                         break;
