@@ -5,8 +5,10 @@ using System.Net.Sockets;
 using System.Threading;
 using TCPEchoServer;
 
-Console.WriteLine("TCP Server");
-int port = 7;
+bool useJSON = false; //Skift til true for at bruge JSON metoden
+
+Console.WriteLine($"TCP Server (JSON Mode: {useJSON})");
+int port = useJSON ? 5001 : 7;  //Bruger port 5001 for JSON mode og 7 for normal mode
 TcpListener listener = new TcpListener(
     IPAddress.Any, port);
 listener.Start();
@@ -14,7 +16,15 @@ listener.Start();
 while(true)
 {
     TcpClient client = listener.AcceptTcpClient();
-    Task.Run(() => ClientHandler.HandleClient(client));
+    if (useJSON)
+    {
+        Task.Run(() => JSONClientHandler.HandleClient(client));
+    }
+    else
+    {
+        Task.Run(() => ClientHandler.HandleClient(client));
+    }
+        
 }
 
 listener.Stop();

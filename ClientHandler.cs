@@ -14,20 +14,25 @@ namespace TCPEchoServer
         {
             NetworkStream stream = client.GetStream();
             StreamReader reader = new StreamReader(stream);
-            StreamWriter writer = new StreamWriter(stream);
+            StreamWriter writer = new StreamWriter(stream) { AutoFlush = true };
 
             bool isRunning = true;
 
+            string initialMessage = "Here are the available commands:\n" +
+                                    "1. Add - Adds two numbers\n" +
+                                    "2. Subtract - Subtracts two numbers\n" +
+                                    "3. Random - Generates a random number from an interval\n" +
+                                    "4. close - Ends the connection\n\n";
+            writer.WriteLine(initialMessage);
 
             while (isRunning)
             {
                 string? msg = reader.ReadLine();
-                Console.WriteLine(msg);
-                switch (msg)
+                Console.WriteLine($"Received: {msg}");
+                switch (msg.ToLower())
                 {
                     case "Random":
                         writer.WriteLine("Input two numbers seperated by a space, to generate a random number from the chosen interval");
-                        writer.Flush();
                         msg = reader.ReadLine();
                         string[] numbers = msg?.Split(' ');
                         if (numbers != null && numbers.Length == 2 && int.TryParse(numbers[0], out int min) && int.TryParse(numbers[1], out int max))
@@ -46,12 +51,10 @@ namespace TCPEchoServer
                         {
                             writer.WriteLine("Invalid input. Please provide two numbers separated by space.");
                         }
-                        writer.Flush();
                         break;
 
                     case "Add":
                         writer.WriteLine("Input numbers to add them together");
-                        writer.Flush();
                         msg = reader.ReadLine();
                         numbers = msg?.Split(' ');
                         if (numbers != null && numbers.Length == 2 && int.TryParse(numbers[0], out int num1) && int.TryParse(numbers[1], out int num2))
@@ -62,12 +65,10 @@ namespace TCPEchoServer
                         {
                             writer.WriteLine("Invalid input. Please provide two numbers separated by space.");
                         }
-                        writer.Flush();
                         break;
 
                     case "Subtract":
                         writer.WriteLine("Input numbers");
-                        writer.Flush();
                         msg = reader.ReadLine();
                         numbers = msg?.Split(' ');
                         if (numbers != null && numbers.Length == 2 && int.TryParse(numbers[0], out num1) && int.TryParse(numbers[1], out num2))
@@ -78,7 +79,6 @@ namespace TCPEchoServer
                         {
                             writer.WriteLine("Invalid input. Please provide two numbers separated by space.");
                         }
-                        writer.Flush();
                         break;
 
                     case "close":
@@ -88,20 +88,13 @@ namespace TCPEchoServer
 
                     default:
                         writer.WriteLine("Command not recognized");
-                        writer.Flush();
                         break;
                 }
-                
-                
                 if (isRunning == false)
                 {
                     writer.WriteLine("closing");
-                    writer.Flush();
                 }
-                
-                writer.Flush(); ;
             }
-
             client.Close();
         }
     }
